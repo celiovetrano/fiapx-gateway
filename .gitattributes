@@ -1,0 +1,5 @@
+# O mvnw é script POSIX: com CRLF ele quebra no Git Bash, no Linux e no CI.
+mvnw      text eol=lf
+*.sh      text eol=lf
+*.cmd     text eol=crlf
+*.jar     binary
