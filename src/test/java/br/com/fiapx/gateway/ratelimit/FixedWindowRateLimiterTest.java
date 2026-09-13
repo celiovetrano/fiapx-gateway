@@ -45,6 +45,19 @@ class FixedWindowRateLimiterTest {
         assertThat(limiter.tryAcquire("10.0.0.1")).isTrue();
     }
 
+    @Test
+    void purgaChavesExpiradasAoEntrarEmNovaJanela() {
+        for (int i = 0; i < 5; i++) {
+            limiter.tryAcquire("10.0.0." + i);
+        }
+        assertThat(limiter.tamanho()).isEqualTo(5);
+
+        relogio.avancar(Duration.ofMinutes(1));
+        limiter.tryAcquire("10.0.0.99");
+
+        assertThat(limiter.tamanho()).isEqualTo(1);
+    }
+
     static final class RelogioAjustavel extends Clock {
 
         private Instant agora;
