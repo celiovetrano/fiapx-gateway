@@ -52,12 +52,14 @@ public class LoginRateLimitFilter implements GlobalFilter, Ordered {
         return response.writeWith(Mono.just(corpo));
     }
 
-    /** Atrás do load balancer da AWS o IP real vem no X-Forwarded-For. */
+    /**
+     * X-Forwarded-For é ignorado de propósito: é enviado pelo próprio cliente, que
+     * poderia forjar um IP novo a cada tentativa e nunca esbarrar no limite. Usamos o
+     * endereço TCP do peer, que o cliente não controla. No EKS, para que esse
+     * endereço seja o IP real do usuário (e não o do load balancer), o Service do
+     * gateway precisa de externalTrafficPolicy: Local — isso é tratado em outra tarefa.
+     */
     private static String cliente(ServerHttpRequest request) {
-        String encaminhado = request.getHeaders().getFirst("X-Forwarded-For");
-        if (encaminhado != null && !encaminhado.isBlank()) {
-            return encaminhado.split(",")[0].trim();
-        }
         InetSocketAddress remoto = request.getRemoteAddress();
         return remoto != null ? remoto.getAddress().getHostAddress() : "desconhecido";
     }

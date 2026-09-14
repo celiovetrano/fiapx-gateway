@@ -50,17 +50,28 @@ class LoginRateLimitFilterTest {
                 .exchange();
     }
 
+    private WebTestClient.ResponseSpec postComForwardedForFalso(String caminho, String ipFalso) {
+        return client.post().uri(caminho)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("X-Forwarded-For", ipFalso)
+                .bodyValue("{\"email\":\"a@b.com\",\"password\":\"errada123\",\"fullName\":\"A\"}")
+                .exchange();
+    }
+
     @Test
-    void quartaTentativaDeLoginNoMesmoMinutoRecebe429() {
+    void quartaTentativaDeLoginNoMesmoMinutoRecebe429MesmoComXForwardedForForjado() {
         int antes = auth.getRequestCount();
         for (int i = 0; i < 3; i++) {
             auth.enqueue(new MockResponse().setResponseCode(401)
                     .setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PROBLEM_JSON_VALUE)
                     .setBody("{\"title\":\"Credenciais invalidas\"}"));
-            post("/api/v1/auth/login").expectStatus().isUnauthorized();
+            // Cada tentativa alega vir de um IP diferente; como o filtro ignora o
+            // X-Forwarded-For (controlado pelo cliente) e conta pelo endereço TCP real
+            // do peer, a falsificação não deve escapar do limite.
+            postComForwardedForFalso("/api/v1/auth/login", "10.0.0." + i).expectStatus().isUnauthorized();
         }
 
-        post("/api/v1/auth/login")
+        postComForwardedForFalso("/api/v1/auth/login", "10.0.0.99")
                 .expectStatus().isEqualTo(429)
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)
                 .expectBody().jsonPath("$.title").isEqualTo("Muitas tentativas de login");
