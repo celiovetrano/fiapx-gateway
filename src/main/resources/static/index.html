@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIAP X — Processador de Vídeos</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topo">
+    <div>
+      <h1>FIAP X</h1>
+      <p>Envie um vídeo e baixe os quadros em um arquivo ZIP.</p>
+    </div>
+    <button id="sair" class="secundario" hidden>Sair</button>
+  </header>
+
+  <main>
+    <section id="acesso" class="cartao">
+      <h2>Entrar</h2>
+      <form id="form-login">
+        <label>E-mail <input name="email" type="email" required autocomplete="username"></label>
+        <label>Senha <input name="password" type="password" required minlength="8" autocomplete="current-password"></label>
+        <button type="submit">Entrar</button>
+      </form>
+      <details>
+        <summary>Não tem conta? Cadastre-se</summary>
+        <form id="form-cadastro">
+          <label>Nome <input name="fullName" required maxlength="120"></label>
+          <label>E-mail <input name="email" type="email" required autocomplete="username"></label>
+          <label>Senha <input name="password" type="password" required minlength="8"
+                             placeholder="8+ caracteres, com letras e números" autocomplete="new-password"></label>
+          <button type="submit">Cadastrar</button>
+        </form>
+      </details>
+    </section>
+
+    <section id="painel" hidden>
+      <div class="cartao">
+        <h2>Novo vídeo</h2>
+        <form id="form-upload">
+          <input name="video" type="file" accept=".mp4,.avi,.mov,.mkv,.wmv,.flv,.webm" required>
+          <button type="submit">Enviar</button>
+        </form>
+        <p class="dica">mp4, avi, mov, mkv, wmv, flv ou webm, até 200 MB. O processamento é assíncrono:
+          a lista abaixo se atualiza sozinha.</p>
+      </div>
+      <div class="cartao">
+        <h2>Meus vídeos</h2>
+        <div class="tabela">
+          <table>
+            <thead><tr><th>Arquivo</th><th>Status</th><th>Quadros</th><th>Enviado em</th><th></th></tr></thead>
+            <tbody id="lista"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <p id="mensagem" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
