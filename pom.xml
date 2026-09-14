@@ -30,6 +30,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- spring-cloud-dependencies 2023.0.6 traz spring-cloud-gateway-server 4.1.9. A partir
+                 da 4.1.6, ForwardedHeadersFilter (usado pelo NettyRoutingFilter em toda rota
+                 proxiada) chama HttpHeaders.headerSet(), método que só existe a partir do Spring
+                 Framework 6.2 (Boot 3.4); com o spring-web 6.1.14 do Boot 3.3.5 isso é
+                 NoSuchMethodError. Fixamos a última 4.1.x sem essa chamada (confirmado via bytecode
+                 das versões 4.1.0-4.1.9 no Maven Central). -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-gateway-server</artifactId>
+                <version>4.1.5</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
