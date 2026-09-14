@@ -23,6 +23,14 @@
              spring-web 6.1.15; o Boot 3.3.5 traz 6.1.14. O parent do Boot usa esta propriedade
              para gerenciar todos os artefatos spring-*. -->
         <spring-framework.version>6.1.21</spring-framework.version>
+
+        <!-- Versões corrigidas para o Trivy; o Boot 3.3.5 gerencia versões com CVEs;
+             revisar ao atualizar o Boot. Mesma linha principal em todos os casos
+             (Jackson 2.x, Netty 4.1.x, Spring Security 6.3.x, Micrometer 1.x). -->
+        <jackson-bom.version>2.18.8</jackson-bom.version>
+        <netty.version>4.1.138.Final</netty.version>
+        <spring-security.version>6.3.8</spring-security.version>
+        <micrometer.version>1.15.12</micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -33,6 +41,14 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- org.bouncycastle:bcprov-jdk18on chega via spring-security-rsa (dependência
+                 transitiva do spring-cloud-starter-gateway), sem propriedade de versão no
+                 Boot nem no BOM do Spring Cloud; CVE-2025-14813 corrigido a partir de 1.80.2. -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.81.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

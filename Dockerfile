@@ -7,6 +7,8 @@ COPY src ./src
 RUN mvn -B -q package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
+# Traz os patches de seguranca do Alpine (libcrypto3/libssl3/openssl, libexpat) para o Trivy.
+RUN apk upgrade --no-cache
 RUN addgroup -S fiapx && adduser -S fiapx -G fiapx
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar

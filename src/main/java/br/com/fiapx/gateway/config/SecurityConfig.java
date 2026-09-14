@@ -22,7 +22,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/", "/index.html", "/app.js", "/styles.css", "/favicon.ico").permitAll()
-                        .pathMatchers("/actuator/**", "/.well-known/**").permitAll()
+                        // Só health fica público: é o único usado pelas probes do k8s e pelo
+                        // HEALTHCHECK do Docker. O Service do EKS é LoadBalancer público, então
+                        // o resto do /actuator/** (ex.: prometheus, info) exige token.
+                        .pathMatchers("/actuator/health/**", "/.well-known/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/v1/auth/register", "/api/v1/auth/login").permitAll()
                         .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()))
