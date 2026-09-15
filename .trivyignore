@@ -1,0 +1,12 @@
+# CVEs aceitos conscientemente (decisão de 2026-09-15, registrada no ledger e no README do fiapx-infra).
+# Todos só têm correção em linhas principais novas (Boot 3.4+/3.5, Spring Framework 6.2,
+# Spring Security 6.5, Spring Cloud Gateway 4.2+/4.3, que exige o BOM 2024.0+); o projeto fixou
+# o Boot 3.3.5 e o Spring Cloud 2023.0.6. As demais dependências já estão na versão corrigida
+# da mesma linha (ver pom.xml). O exp: força revisar na migração do Boot.
+CVE-2025-22235 exp:2026-12-31
+CVE-2026-40973 exp:2026-12-31
+CVE-2025-41253 exp:2026-12-31
+CVE-2026-22732 exp:2026-12-31
+CVE-2025-41249 exp:2026-12-31
+CVE-2026-41850 exp:2026-12-31
+CVE-2026-41842 exp:2026-12-31
